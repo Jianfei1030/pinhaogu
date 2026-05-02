@@ -31,7 +31,7 @@ import requests
 
 # ── 配置 ─────────────────────────────────────────────────────────────────────
 
-OLLAMA_HOST = "http://localhost:11434"
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
 EMBEDDING_ENDPOINT = f"{OLLAMA_HOST}/api/embed"
 EMBEDDING_MODEL = "qwen3-embedding:4b"
 SIMILARITY_THRESHOLD = 0.75   # 余弦相似度阈值，高于此值视为重复

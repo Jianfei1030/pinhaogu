@@ -204,10 +204,13 @@ def restart_news_collector() -> bool:
         return False
 
 
+OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
+
+
 def restart_ollama() -> bool:
     """重启 Ollama"""
     try:
-        resp = urllib.request.urlopen("http://127.0.0.1:11434/api/tags", timeout=3)
+        resp = urllib.request.urlopen(f"{OLLAMA_HOST}/api/tags", timeout=3)
         json.loads(resp.read())
         return True  # 已在运行
     except Exception:
@@ -222,7 +225,7 @@ def restart_ollama() -> bool:
             start_new_session=True,
         )
         time.sleep(8)
-        resp = urllib.request.urlopen("http://127.0.0.1:11434/api/tags", timeout=5)
+        resp = urllib.request.urlopen(f"{OLLAMA_HOST}/api/tags", timeout=5)
         json.loads(resp.read())
         print("✅ Ollama 已重启")
         return True
@@ -344,7 +347,7 @@ def check_server() -> tuple[str, bool]:
 def check_ollama() -> tuple[str, bool]:
     """检查 Ollama 状态，返回 (状态文本，是否重启)"""
     try:
-        resp = urllib.request.urlopen("http://127.0.0.1:11434/api/tags", timeout=3)
+        resp = urllib.request.urlopen(f"{OLLAMA_HOST}/api/tags", timeout=3)
         data = json.loads(resp.read())
         models = [m["name"] for m in data.get("models", [])]
         if "qwen3-embedding:4b" in models or "bge-m3:latest" in models:
