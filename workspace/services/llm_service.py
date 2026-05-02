@@ -97,12 +97,15 @@ def chat_completion(
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     
-    proxy_handler = urllib.request.ProxyHandler({
-        "http": LLM_PROXY,
-        "https": LLM_PROXY,
-    })
     https_handler = urllib.request.HTTPSHandler(context=ctx)
-    opener = urllib.request.build_opener(proxy_handler, https_handler)
+    if LLM_PROXY:
+        proxy_handler = urllib.request.ProxyHandler({
+            "http": LLM_PROXY,
+            "https": LLM_PROXY,
+        })
+        opener = urllib.request.build_opener(proxy_handler, https_handler)
+    else:
+        opener = urllib.request.build_opener(https_handler)
     
     # 构建请求
     req = urllib.request.Request(url, data=payload, headers={
@@ -187,12 +190,15 @@ def chat_completion_raw(
     ctx.check_hostname = False
     ctx.verify_mode = ssl.CERT_NONE
     
-    proxy_handler = urllib.request.ProxyHandler({
-        "http": LLM_PROXY,
-        "https": LLM_PROXY,
-    })
     https_handler = urllib.request.HTTPSHandler(context=ctx)
-    opener = urllib.request.build_opener(proxy_handler, https_handler)
+    if LLM_PROXY:
+        proxy_handler = urllib.request.ProxyHandler({
+            "http": LLM_PROXY,
+            "https": LLM_PROXY,
+        })
+        opener = urllib.request.build_opener(proxy_handler, https_handler)
+    else:
+        opener = urllib.request.build_opener(https_handler)
     
     req = urllib.request.Request(url, data=payload, headers={
         "Content-Type": "application/json",

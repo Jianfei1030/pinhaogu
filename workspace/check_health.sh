@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# stock-monitor 健康检查脚本 (macOS)
+# pinhaogu 健康检查脚本 (macOS)
 # 检查四件套运行状态（server/monitor/news/ollama）+ 端口监听 + 日志摘要
 #
 # 用法：cd workspace && ./check_health.sh
@@ -15,7 +15,7 @@ cd "$(dirname "$0")"
 SERVER_PORT=$(python3 -c "import yaml; print(yaml.safe_load(open('config.yaml')).get('web', {}).get('port', 18805))" 2>/dev/null || echo 18805)
 
 echo "=========================================="
-echo "  stock-monitor 健康检查"
+echo "  pinhaogu 健康检查"
 echo "  时间：$(date '+%Y-%m-%d %H:%M:%S')"
 echo "  Server 端口：$SERVER_PORT"
 echo "=========================================="

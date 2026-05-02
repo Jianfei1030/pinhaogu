@@ -19,7 +19,7 @@ import sys
 import os
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-WORKSPACE_VENV = os.path.join(SCRIPT_DIR, "../../../projects/stock-monitor/workspace/venv/lib")
+WORKSPACE_VENV = os.path.join(SCRIPT_DIR, "venv/lib")
 if os.path.exists(WORKSPACE_VENV):
     for d in os.listdir(WORKSPACE_VENV):
         if d.startswith("python"):

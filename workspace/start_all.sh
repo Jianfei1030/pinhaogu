@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# stock-monitor 一键启动脚本 (macOS)
+# pinhaogu 一键启动脚本 (macOS)
 # 启动后台三进程：server + monitor + daily_news_collector
 # 同时检查 Ollama 依赖（端口 13145）是否可用
 #
@@ -22,7 +22,7 @@ LOGDATE=$(date +%Y-%m-%d)
 SERVER_PORT=$(python3 -c "import yaml; print(yaml.safe_load(open('config.yaml')).get('web', {}).get('port', 18805))" 2>/dev/null || echo 18805)
 
 echo "=========================================="
-echo "  stock-monitor 启动脚本 (macOS)"
+echo "  pinhaogu 启动脚本 (macOS)"
 echo "  日期：$LOGDATE"
 echo "  Server 端口：$SERVER_PORT"
 echo "  说明：启动 server/monitor/news，检查 Ollama 依赖"

@@ -1,5 +1,5 @@
 # workspace/services package
-# Service layer for stock-monitor workspace
+# Service layer for pinhaogu workspace
 
 from .runtime_state_service import is_dry_run, is_notify_enabled, get_runtime_flags
 from .news_service import (
