@@ -1,0 +1,746 @@
+/* ===== Tab 导航栏移动端响应式 ===== */
+@media (max-width: 768px) {
+  #tabBar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 10px;
+  }
+  
+  .tab-btn {
+    padding: 12px 16px;
+    font-size: 13px;
+    flex: 0 0 auto;
+  }
+  
+  #statusBar {
+    flex-wrap: wrap;
+    padding: 8px 12px;
+    font-size: 12px;
+    top: 44px;
+  }
+  
+  .status-bar-stocks {
+    width: 100%;
+    margin-bottom: 6px;
+  }
+  
+  .tab-content {
+    min-height: calc(100vh - 44px - 40px);
+  }
+}
+
+@media (max-width: 1100px) {
+  .outer { flex-direction: column; }
+  .sidebar { width: 100%; height: auto; }
+}
+
+/* ===== 平板响应式 (768px ~ 1099px) ===== */
+@media (min-width: 768px) and (max-width: 1099px) {
+  .outer {
+    flex-direction: column;
+    padding: 12px;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .sidebar .watch-item {
+    flex: 0 0 calc(33.33% - 8px);
+  }
+  #klineCanvas { height: 320px; }
+  #macdCanvas  { height: 180px; }
+  .toolbar { padding: 14px 16px; }
+  .title { font-size: 18px; }
+}
+
+/* ===== 手机响应式 (< 768px) ===== */
+@media (max-width: 767px) {
+  /* --- 外层布局 --- */
+  .outer {
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+    max-width: 100%;
+  }
+
+  /* --- 侧边栏 --- */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -320px;
+    width: 280px;
+    height: 100vh;
+    z-index: 500;
+    border-radius: 0;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: var(--panel);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px 12px;
+    box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    will-change: transform;
+  }
+  .sidebar.open {
+    transform: translateX(280px);
+  }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 499;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    backdrop-filter: blur(2px);
+  }
+  .sidebar-backdrop.show {
+    display: block;
+    opacity: 1;
+  }
+
+  /* --- 侧边栏切换按钮 --- */
+  .sidebar-toggle-btn {
+    display: flex;
+    position: fixed;
+    top: 60px;
+    left: 12px;
+    z-index: 501;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 18px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    transition: all 0.2s ease;
+  }
+  .sidebar-toggle-btn:active {
+    transform: scale(0.95);
+    background: var(--bg-hover);
+  }
+
+  /* --- 面板 --- */
+  .panel {
+    border-radius: 0;
+  }
+
+  /* --- 工具栏（选择器区域）--- */
+  .toolbar {
+    padding: 6px 12px;
+    gap: 8px;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+  }
+  /* 隐藏「港股监控」标题 */
+  .toolbar .title {
+    display: none;
+  }
+  /* 日期/周期/刷新 横排单行 */
+  .control {
+    flex-direction: row;      /* 标签和选择器同行 */
+    align-items: center;
+    gap: 4px;
+    padding: 0;               /* 无内边距 */
+    background: none;         /* 无卡片背景 */
+    border: none;             /* 无边框 */
+    border-radius: 0;
+  }
+  .control label {
+    font-size: 12px;
+    white-space: nowrap;
+    margin: 0;
+  }
+  .control select,
+  .control input[type="date"] {
+    font-size: 12px;
+    width: auto;              /* 自然宽度 */
+    min-width: 90px;          /* 最小宽度确保可点 */
+    padding: 2px 4px;
+    height: 28px;
+  }
+  #refreshHint {
+    display: none;
+  }
+
+  /* --- 内容区 --- */
+  .content {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+
+  /* --- 股票标题区（一行紧凑布局）--- */
+  .headline {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 4px 8px !important;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0;
+  }
+  .headline-left {
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .stock-name {
+    font-size: 16px !important;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .price-board {
+    flex: 1;
+    gap: 6px;
+    align-items: center;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+  }
+  .price-main {
+    gap: 6px;
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  /* 价格缩小 */
+  .price {
+    font-size: 20px !important;
+    font-weight: 700;
+    line-height: 1 !important;
+  }
+  /* 涨跌幅合并到价格同一行 */
+  .change {
+    font-size: 13px !important;
+    font-weight: 600;
+    padding: 2px 5px;
+    border-radius: 4px;
+    line-height: 1;
+    margin-left: 0 !important;
+  }
+  /* 数据源 badge 紧凑化 */
+  .source-badge {
+    font-size: 10px !important;
+    padding: 1px 4px !important;
+    margin-left: 4px !important;
+    display: inline-block !important;
+  }
+  /* 隐藏详情行（HK01810 · 15min · 日期 · 收盘 · 昨收） */
+  .subline {
+    display: none !important;
+  }
+  /* 隐藏时间行 */
+  .quote-time {
+    display: none !important;
+  }
+
+  /* --- Canvas 高度（保持原样）--- */
+  #klineCanvas {
+    height: calc(100vh - 350px);
+    min-height: 250px;
+  }
+  #macdCanvas {
+    height: calc(100vh - 350px);
+    min-height: 100px;
+    max-height: 120px;
+  }
+  .chart-card {
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+  .chart-title {
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .ma-legend {
+    font-size: 9px;
+    margin-left: 4px;
+  }
+  .ma-legend span {
+    margin-right: 3px;
+  }
+  .ma-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  canvas {
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* --- 详情面板 --- */
+  .detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .detail-col + .detail-col {
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+  .detail-row {
+    font-size: 12px;
+  }
+  .detail-label {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .detail-value {
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* --- 分析面板 --- */
+  .analysis-panel {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    z-index: 600;
+    padding: 16px;
+    padding-top: max(16px, env(safe-area-inset-top));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  /* --- 切换按钮（上移，远离底部浏览器栏）--- */
+  #analysisToggleBtn {
+    bottom: 80px;
+    right: 12px;
+    padding: 8px 14px;
+    font-size: 13px;
+    z-index: 150;
+    box-shadow: 0 2px 12px rgba(99,102,241,0.4);
+  }
+  #symbolToggleBtn {
+    bottom: 80px;
+    left: 12px;
+    padding: 8px 14px;
+    font-size: 13px;
+    z-index: 150;
+    box-shadow: 0 2px 12px rgba(41,98,255,0.4);
+  }
+
+  /* --- 模态框 --- */
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+  .modal {
+    padding: 0;
+  }
+
+  /* --- 选股面板 --- */
+  #screenerPanel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    max-height: 70vh;
+    border-radius: 14px 14px 0 0;
+    margin: 0;
+    z-index: 300;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+  #screenerPanel.mobile-open {
+    transform: translateY(0);
+  }
+
+  /* News/screener now in sidebar */
+  .main-content-flex {
+    width: 100%;
+  }
+
+  /* --- Tooltip 字体缩小 --- */
+  .tooltip {
+    font-size: 11px;
+    min-width: 140px;
+    padding: 8px 10px;
+  }
+}
+
+/* ===== 超窄屏手机 (< 430px) ===== */
+@media (max-width: 430px) {
+  #tabBar {
+    padding: 0 4px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  #tabBar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .tab-btn {
+    padding: 8px 10px;
+    font-size: 11px;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    gap: 4px;
+  }
+  
+  .tab-btn .tab-icon {
+    font-size: 14px;
+  }
+  
+  #statusBar {
+    padding: 4px 8px;
+    font-size: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+    top: 40px;
+  }
+  
+  .status-bar-monitor,
+  .status-bar-collector {
+    padding: 3px 6px;
+    font-size: 10px;
+    border-radius: 4px;
+  }
+  
+  .status-bar-stocks {
+    font-size: 10px;
+    padding: 3px 6px;
+    width: 100%;
+    order: -1;
+    margin-bottom: 4px;
+  }
+  
+  .toolbar {
+    padding: 4px 8px;
+    gap: 4px;
+  }
+  
+  .control label {
+    font-size: 10px;
+  }
+  
+  .control select,
+  .control input[type="date"] {
+    font-size: 10px;
+    min-width: 70px;
+    height: 24px;
+    padding: 2px 4px;
+  }
+  
+  .headline {
+    padding: 4px 6px !important;
+  }
+  
+  .stock-name {
+    font-size: 14px !important;
+  }
+  
+  .price {
+    font-size: 18px !important;
+  }
+  
+  .change {
+    font-size: 12px !important;
+    padding: 2px 4px;
+  }
+  
+  #klineCanvas {
+    min-height: 180px;
+  }
+  
+  #macdCanvas {
+    min-height: 70px;
+  }
+  
+  /* 浮动按钮进一步收缩 - 避免遮挡内容 */
+  #analysisToggleBtn,
+  #symbolToggleBtn {
+    bottom: 16px;
+    padding: 5px 10px;
+    font-size: 11px;
+    border-radius: 6px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+    z-index: 100;
+  }
+  
+  /* 为底部按钮留出空间 */
+  .tab-content {
+    padding-bottom: 60px;
+  }
+  
+  /* 侧栏抽屉在超窄屏下的优化 */
+  .sidebar {
+    width: 260px;
+    left: -260px;
+  }
+  
+  .sidebar.open {
+    transform: translateX(260px);
+  }
+  
+  .sidebar-toggle-btn {
+    top: 50px;
+    left: 8px;
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  
+  /* 内容区 padding 调整 */
+  .content {
+    padding: 4px 6px;
+  }
+  
+  /* Tab 内容区高度调整 */
+  .tab-content {
+    min-height: calc(100vh - 40px - 36px);
+  }
+}
+
+/* ===== iPhone SE 级别 (< 390px) ===== */
+@media (max-width: 390px) {
+  .tab-btn {
+    padding: 6px 8px;
+    font-size: 10px;
+  }
+  
+  .tab-btn .tab-icon {
+    font-size: 12px;
+  }
+  
+  .toolbar {
+    gap: 3px;
+    padding: 3px 6px;
+  }
+  
+  .control select,
+  .control input[type="date"] {
+    min-width: 65px;
+    font-size: 9px;
+    height: 22px;
+  }
+  
+  .control label {
+    font-size: 9px;
+  }
+  
+  .sidebar {
+    width: 240px;
+  }
+  
+  .sidebar.open {
+    transform: translateX(240px);
+  }
+  
+  /* 浮动按钮在 iPhone SE 上进一步缩小 */
+  #analysisToggleBtn,
+  #symbolToggleBtn {
+    bottom: 12px;
+    padding: 4px 8px;
+    font-size: 10px;
+    border-radius: 5px;
+  }
+  
+  /* 为底部按钮留出空间 */
+  .tab-content {
+    padding-bottom: 50px;
+  }
+  
+  /* 状态栏进一步压缩 */
+  #statusBar {
+    padding: 3px 6px;
+    font-size: 9px;
+    gap: 4px;
+  }
+  
+  .status-bar-monitor,
+  .status-bar-collector,
+  .status-bar-stocks {
+    padding: 2px 4px;
+    font-size: 9px;
+  }
+  
+  /* 股票标题区更紧凑 */
+  .headline {
+    padding: 3px 4px !important;
+    gap: 4px;
+  }
+  
+  .stock-name {
+    font-size: 13px !important;
+  }
+  
+  .price {
+    font-size: 16px !important;
+  }
+  
+  .change {
+    font-size: 11px !important;
+    padding: 1px 3px;
+  }
+  
+  /* 图表高度进一步调整 */
+  #klineCanvas {
+    min-height: 160px;
+  }
+  
+  #macdCanvas {
+    min-height: 60px;
+  }
+}
+
+/* ===== 平板横屏/小桌面 (768px ~ 1024px) ===== */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .outer {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .sidebar {
+    width: 220px;
+    padding: 12px;
+  }
+  
+  .panel {
+    border-radius: var(--radius-lg);
+  }
+  
+  .toolbar {
+    padding: 10px 14px;
+  }
+  
+  .title {
+    font-size: 15px;
+  }
+  
+  .stock-name {
+    font-size: 22px;
+  }
+  
+  .price {
+    font-size: 28px;
+  }
+  
+  #klineCanvas {
+    height: 340px;
+  }
+  
+  #macdCanvas {
+    height: 160px;
+  }
+  
+  /* 浮动按钮位置调整 */
+  #analysisToggleBtn,
+  #symbolToggleBtn {
+    bottom: 24px;
+  }
+}
+
+/* ===== 中等桌面 (1025px ~ 1280px) ===== */
+@media (min-width: 1025px) and (max-width: 1280px) {
+  .outer {
+    padding: 16px;
+    gap: 14px;
+  }
+  
+  .sidebar {
+    width: 240px;
+  }
+  
+  #klineCanvas {
+    height: 360px;
+  }
+  
+  #macdCanvas {
+    height: 180px;
+  }
+}
+
+/* ===== 图表触摸优化 ===== */
+@media (pointer: coarse) {
+  /* 触摸设备上的图表优化 */
+  canvas {
+    touch-action: pan-y pinch-zoom;
+  }
+  
+  .chart-card {
+    /* 增加触摸区域 */
+    padding: 12px;
+  }
+  
+  /* Tooltip 在触摸设备上的调整 */
+  .tooltip {
+    /* 避免 tooltip 遮挡关键信息 */
+    max-width: 200px;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+}
+
+/* ===== 小屏 Tooltip 优化 (< 430px) ===== */
+@media (max-width: 430px) {
+  .tooltip {
+    max-width: 160px;
+    font-size: 10px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    /* 确保 tooltip 不会超出屏幕 */
+    left: auto !important;
+    right: 10px !important;
+    transform: none !important;
+  }
+  
+  /* 图表卡片在小屏下的触摸优化 */
+  .chart-card {
+    padding: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .chart-title {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+  
+  .ma-legend {
+    font-size: 8px;
+    gap: 6px;
+  }
+}
+
+/* ===== 减少动画（偏好设置） ===== */
+@media (prefers-reduced-motion: reduce) {
+  .sidebar,
+  .sidebar-backdrop,
+  #screenerPanel {
+    transition: none;
+  }
+  
+  #analysisToggleBtn,
+  #symbolToggleBtn {
+    transition: none;
+  }
+}
+
+/* ===== 高对比度模式支持 ===== */
+@media (prefers-contrast: high) {
+  .sidebar-toggle-btn {
+    border-width: 2px;
+  }
+  
+  .tab-btn.active {
+    border-bottom-width: 3px;
+  }
+}

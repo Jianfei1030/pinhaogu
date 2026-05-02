@@ -1,0 +1,139 @@
+watchlist:
+- market: HK
+  symbol: 01810
+  name: 小米集团-W
+- market: HK
+  symbol: 09988
+  name: 阿里巴巴-SW
+- market: HK
+  symbol: 00981
+  name: 中芯国际
+- market: A
+  symbol: '603986'
+  name: 兆易创新
+refresh_interval: 30
+trading_hours:
+  HK:
+    start: 09:00
+    end: '16:10'
+  A:
+    start: 09:15
+    end: '15:00'
+    break_start: '11:30'
+    break_end: '13:00'
+periods:
+- 1min
+- 5min
+- 15min
+- 30min
+- 60min
+- daily
+alerts:
+- name: 5min+15min DIF+柱双斜率向上
+  period: 5min
+  ref_periods:
+  - 15min
+  conditions:
+    logic: AND
+    rules:
+    - indicator: macd_slope
+      op: '>'
+      value: 0.0
+    - indicator: hist_slope
+      op: '>'
+      value: 0.0
+    - indicator: 15min:macd_slope
+      op: '>'
+      value: 0.0
+    - indicator: 15min:hist_slope
+      op: '>'
+      value: 0.0
+  cooldown: 300
+- name: 5min+15min DIF+柱双斜率向下
+  period: 5min
+  ref_periods:
+  - 15min
+  conditions:
+    logic: AND
+    rules:
+    - indicator: macd_slope
+      op: <
+      value: 0.0
+    - indicator: hist_slope
+      op: <
+      value: 0.0
+    - indicator: 15min:macd_slope
+      op: <
+      value: 0.0
+    - indicator: 15min:hist_slope
+      op: <
+      value: 0.0
+  cooldown: 300
+- name: 30min DIF+柱双斜率向上
+  period: 30min
+  conditions:
+  - indicator: macd_slope
+    op: '>'
+    value: 0.0
+  - indicator: hist_slope
+    op: '>'
+    value: 0.0
+  cooldown: 300
+- name: 30min DIF+柱双斜率向下
+  period: 30min
+  conditions:
+  - indicator: macd_slope
+    op: <
+    value: 0.0
+  - indicator: hist_slope
+    op: <
+    value: 0.0
+  cooldown: 300
+- name: 60min DIF+柱双斜率向上
+  period: 60min
+  conditions:
+  - indicator: macd_slope
+    op: '>'
+    value: 0.0
+  - indicator: hist_slope
+    op: '>'
+    value: 0.0
+  cooldown: 300
+- name: 60min DIF+柱双斜率向下
+  period: 60min
+  conditions:
+  - indicator: macd_slope
+    op: <
+    value: 0.0
+  - indicator: hist_slope
+    op: <
+    value: 0.0
+  cooldown: 300
+datasource:
+  tencent_1min: https://web.ifzq.gtimg.cn/appstock/app/minute/query
+  tencent_daily: https://web.ifzq.gtimg.cn/appstock/app/fqkline/get
+  sina_quote: https://hq.sinajs.cn/list={symbol}
+database:
+  base_dir: data
+
+web:
+  port: 18805
+
+llm:
+  model: qwen3.6-plus
+  base_url: https://coding.dashscope.aliyuncs.com/v1
+  api_key_env: BAILIAN_API_KEY
+  proxy: http://127.0.0.1:7890
+  timeout: 300
+
+# Phase 30: 增量补全配置
+backfill:
+  enabled: true
+  sleep_per_stock: 3.0  # 每只股票后延迟（秒）
+  sleep_per_100: 60.0   # 每 100 只后延迟（秒）
+  workers: 4            # 并行 workers 数量（1=顺序模式）
+
+# 全局运行时开关
+runtime:
+  dry_run: false
+  notify_enabled: true

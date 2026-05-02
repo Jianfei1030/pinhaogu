@@ -1,0 +1,135 @@
+# 数据库文件
+data/**/*.db
+data/*.db
+data/**/*.sqlite
+data/*.sqlite
+**/*.db
+**/*.sqlite
+
+# K 线数据表（可能产生的）
+# kline_1d / kline_1wk / kline_1mo / kline_5min / kline_15min / etc.
+
+# 运行状态文件
+data/.monitor_status.json
+data/.monitor_pid
+data/.monitor_reload
+data/.calibration_status.json
+data/.analysis_status.json
+data/.backfill_status.json
+
+# 选股结果
+data/screener_results/
+workspace/screener_results/
+**/screener_results/
+
+# 筹码分布数据
+data/chip_distribution/
+workspace/chip_data/
+**/chip_*.json
+
+# 新闻数据（量大，只保留结构）
+news_data/*.json
+!news_data/.gitkeep
+workspace/news_data/*.json
+
+# 分析报告（量大，可选忽略）
+reports/*.md
+reports/*.html
+workspace/reports/*.md
+workspace/reports/*.html
+!reports/.gitkeep
+!workspace/reports/.gitkeep
+
+# 虚拟环境
+**/venv/
+**/.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.pyc
+__pycache__/
+
+# 日志
+logs/
+
+# 临时文件
+.cache/
+embed_cache_*.json
+tmp/
+*.log
+
+# 板块/题材数据库
+data/board/*.db
+data/thesis.db
+
+# 数据补全进度
+data/backfill_progress.json
+
+# workspace 运行时文件
+workspace/kline.db
+workspace/.monitor.pid
+workspace/daily_news.log
+workspace/review_status.json
+
+# 配置文件（含敏感信息）
+config.local.yaml
+*.local.yaml
+.env
+.env.local
+
+# 备份文件
+*.bak
+*.backup
+*.orig
+
+# 缓存文件
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 前端构建产物
+workspace/static/dist/
+workspace/static/build/
+
+# 其他可能的大文件
+*.zip
+*.tar.gz
+*.csv
+**/backtest_results/*.csv
+**/backtest_results/*.json
+.claude/
+stock-monitor.code-workspace
+tasks.md.bak
+
+# 个人文件（不公开）
+thesis-ingest/input_images/
+thesis-ingest/output/
+thesis-ingest/checkpoints/
+thesis-ingest/database/
+checkpoints/
+data/.review_status.json
+data/bj_retry_final_report.md
+.pytest_cache/
+output/
+data_old/
+PHASE30_IMPLEMENTATION.md
+data/
+!data/a_stock_list.json
+verify.py
+update_alerts.py
+calibrate.py
+news_filter.py
+data_backfill*.py
+data_source.py
+concept_board*.py
+daily_sector_pipeline.py
+stop_all.bat
+start_all.bat
+batch_repair_databases.py
+batch_update_chip_data.py
+example_stock_lookup.py

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>股票监控中心</title>
+  <link rel="stylesheet" href="/static/css/variables.css?v=20260326001">
+  <link rel="stylesheet" href="/static/css/layout.css?v=20260326001">
+  <link rel="stylesheet" href="/static/css/components.css?v=20260326001">
+  <link rel="stylesheet" href="/static/css/responsive.css?v=20260326001">
+</head>
+<body>
+  <!-- Tab 导航栏 -->
+  <div id="tabBar">
+    <div class="tab-btn active" data-tab="monitor">📊 监控</div>
+    <div class="tab-btn" data-tab="news">📰 新闻</div>
+    <div class="tab-btn" data-tab="screener">🔍 选股</div>
+    <div class="tab-btn" data-tab="backtest">📈 回测</div>
+  </div>
+
+  <!-- 常驻状态栏 -->
+  <div id="statusBar">
+    <div id="statusBarMonitor" class="status-bar-monitor">
+      <span id="statusBarMonitorDot" class="monitor-dot"></span>
+      <span id="statusBarMonitorText">🔴 已收盘</span>
+    </div>
+    <div class="status-bar-divider"></div>
+    <div id="statusBarStocks" class="status-bar-stocks">加载中...</div>
+    <div class="status-bar-divider"></div>
+    <div id="statusBarCollector" class="status-bar-collector">
+      <span id="statusBarCollectorDot" class="collector-dot"></span>
+      <span id="statusBarCollectorText">采集中</span>
+      <span id="statusBarNewsCount" class="status-bar-news-count">0 条</span>
+    </div>
+  </div>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <!-- Tab 1: 监控 -->
+  <div id="tabContentMonitor" class="tab-content">
+    <div class="outer">
+      <div class="sidebar" id="sidebar">
+        <div style="font-weight:700; font-size:16px; margin-bottom:10px;">🐾 监控股票</div>
+        <div id="watchList"></div>
+        <div style="font-weight:700; font-size:14px; margin:16px 0 8px 0;">📰 最新新闻</div>
+        <div id="monitorNewsList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="toolbar">
+          <div class="title">📊 股票监控</div>
+          <!-- 隐藏的股票选择器，供 JS 逻辑使用 -->
+          <select id="symbolSelect" style="display:none;"></select>
+          <div class="control">
+            <label for="dateInput">日期</label>
+            <input id="dateInput" type="date" />
+          </div>
+          <div class="control">
+            <label for="periodSelect">周期</label>
+            <select id="periodSelect"></select>
+          </div>
+          <div class="control">
+            <label for="refreshSelect">刷新</label>
+            <select id="refreshSelect">
+              <option value="30">30 秒</option>
+              <option value="60" selected>60 秒</option>
+              <option value="120">2 分钟</option>
+              <option value="300">5 分钟</option>
+            </select>
+          </div>
+          <div style="margin-left:auto; color:var(--muted); font-size:13px;" id="refreshHint"></div>
+        </div>
+
+        <div class="content">
+          <div class="main-content-flex">
+            <div class="chart-section">
+              <div class="headline">
+                <div class="headline-left">
+                  <div id="stockName" class="stock-name">-</div>
+                  <div id="stockMeta" class="subline">等待加载...</div>
+                </div>
+                <div class="price-board">
+                  <div class="price-main">
+                    <div id="price" class="price">-</div>
+                    <div id="change" class="change flat">-</div>
+                  </div>
+                  <div id="sourceBadge" class="source-badge">THS-SIM</div>
+                  <div id="quoteTime" class="quote-time">数据时间：--</div>
+                </div>
+              </div>
+
+              <div id="loading" class="loading">正在加载数据...</div>
+
+              <div id="charts" style="display:none; position:relative;">
+                <div class="chart-card">
+                  <div class="chart-title">K 线图 <span class="ma-legend" id="maLegend"><span><i class="ma-dot" style="background:var(--ma5)"></i>MA5</span><span><i class="ma-dot" style="background:var(--ma10)"></i>MA10</span><span><i class="ma-dot" style="background:var(--ma20)"></i>MA20</span><span><i class="ma-dot" style="background:var(--ma60)"></i>MA60</span></span></div>
+                  <canvas id="klineCanvas"></canvas>
+                </div>
+
+                <div id="detailPanel" class="detail-panel">
+                  <div id="detailTime" class="detail-header">时间：--</div>
+                  <div class="detail-grid">
+                    <div class="detail-col">
+                      <div class="detail-col-title">K 线</div>
+                      <div class="detail-row"><span class="detail-label">开</span><span id="detailOpen" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">高</span><span id="detailHigh" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">低</span><span id="detailLow" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">收</span><span id="detailClose" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">量</span><span id="detailVolume" class="detail-value">--</span></div>
+                    </div>
+                    <div class="detail-col">
+                      <div class="detail-col-title">MACD</div>
+                      <div class="detail-row"><span class="detail-label">DIF</span><span id="detailDif" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">DEA</span><span id="detailDea" class="detail-value">--</span></div>
+                      <div class="detail-row"><span class="detail-label">柱</span><span id="detailHist" class="detail-value">--</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="chart-card">
+                  <div class="chart-title">MACD</div>
+                  <canvas id="macdCanvas"></canvas>
+                </div>
+
+                <div id="warning" class="warning"></div>
+              </div>
+
+              <div class="panel" style="margin-top:18px;">
+                <div class="panel-header" style="padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+                  <span>🔔 告警规则</span>
+                  <button id="addAlertBtn" class="btn">+ 新增规则</button>
+                </div>
+                <div id="alertList"></div>
+              </div>
+
+              <div id="empty" class="empty" style="display:none;">暂无可展示数据</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 2: 新闻 -->
+  <div id="tabContentNews" class="tab-content" style="display:none;">
+    <div class="news-fullscreen-container">
+      <!-- 新闻 Tab 顶部工具栏 -->
+      <div class="news-toolbar">
+        <div class="news-toolbar-title">📰 新闻</div>
+        <div class="news-toolbar-controls">
+          <label class="news-toolbar-label">日期</label>
+          <input id="newsDateInput" type="date" class="news-toolbar-input" />
+        </div>
+      </div>
+
+      <!-- 盘前分析区域 -->
+      <div id="premarketSection" class="premarket-section">
+        <div class="premarket-section-title">📊 盘前分析</div>
+        <div id="premarketCards"></div>
+      </div>
+
+      <!-- 盘后复盘区域 -->
+      <div id="reviewSection" class="review-section">
+        <div class="review-section-title">🔄 盘后复盘</div>
+        <div id="reviewCards"></div>
+      </div>
+
+      <!-- 新闻列表区域 -->
+      <div class="news-list-section">
+        <div id="newsTabList" class="news-list-fullscreen"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 3: 选股 -->
+  <div id="tabContentScreener" class="tab-content" style="display:none;">
+    <div class="screener-fullscreen-container">
+      <div class="screener-panel-fullscreen">
+        <div class="screener-header">
+          <div class="screener-title">🔍 智能选股</div>
+          <div class="screener-subtitle">基于多维度指标筛选优质标的</div>
+        </div>
+
+        <!-- 盘前推荐区域 -->
+        <div id="screenerPremarketSection" class="screener-premarket-section" style="display:none;">
+          <div class="screener-premarket-header">
+            <div class="screener-premarket-title">🎯 今日推荐板块</div>
+            <div id="screenerPremarketDate" class="screener-premarket-date"></div>
+          </div>
+          <div id="screenerSectorInfo"></div>
+          <div id="screenerStocksList"></div>
+        </div>
+
+        <div id="screenerBody" class="screener-body">
+          <!-- 筛选区 -->
+          <div class="screener-filter-section">
+            <div class="screener-filter-group">
+              <label class="screener-filter-label">板块筛选</label>
+              <select id="sectorSelect" class="screener-sector-select">
+                <option value="">全部板块</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- 条件区 -->
+          <div class="screener-conditions-section">
+            <div class="screener-conditions-header">
+              <span class="screener-conditions-title">筛选条件</span>
+              <button id="screenerAddConditionBtn" class="screener-btn-add">+ 添加条件</button>
+            </div>
+            <div id="screenerConditions" class="screener-conditions-list"></div>
+          </div>
+
+          <!-- 操作按钮 -->
+          <div class="screener-action-bar">
+            <button id="runScreenBtn" class="screener-btn-run">🔍 执行选股</button>
+          </div>
+
+          <!-- 结果表格 -->
+          <div id="screenerResults" class="screener-results">
+            <table class="screener-results-table">
+              <thead>
+                <tr>
+                  <th>代码</th>
+                  <th>名称</th>
+                  <th class="numeric">最新价</th>
+                  <th class="numeric">涨跌幅</th>
+                </tr>
+              </thead>
+              <tbody id="screenerResultBody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: 回测 -->
+  <div id="tabContentBacktest" class="tab-content" style="display:none;">
+    <div class="backtest-container">
+      <div class="backtest-card">
+        <div class="backtest-header">
+          <div class="backtest-icon">📈</div>
+          <div class="backtest-title">策略回测</div>
+          <div class="backtest-badge">功能预览</div>
+        </div>
+        <div class="backtest-body">
+          <div class="backtest-feature-grid">
+            <div class="backtest-feature-item">
+              <div class="backtest-feature-icon">🎯</div>
+              <div class="backtest-feature-title">多因子策略</div>
+              <div class="backtest-feature-desc">支持技术指标、基本面、资金面多维度组合</div>
+            </div>
+            <div class="backtest-feature-item">
+              <div class="backtest-feature-icon">📊</div>
+              <div class="backtest-feature-title">历史回测</div>
+              <div class="backtest-feature-desc">基于真实历史数据验证策略有效性</div>
+            </div>
+            <div class="backtest-feature-item">
+              <div class="backtest-feature-icon">📉</div>
+              <div class="backtest-feature-title">收益分析</div>
+              <div class="backtest-feature-desc">收益率、最大回撤、夏普比率全面评估</div>
+            </div>
+            <div class="backtest-feature-item">
+              <div class="backtest-feature-icon">⚡</div>
+              <div class="backtest-feature-title">实时模拟</div>
+              <div class="backtest-feature-desc">盘中实时模拟交易信号与持仓表现</div>
+            </div>
+          </div>
+          <div class="backtest-coming-soon">
+            <div class="backtest-progress">
+              <div class="backtest-progress-bar"></div>
+            </div>
+            <div class="backtest-status">
+              <span class="backtest-status-dot"></span>
+              <span>开发中 · 敬请期待</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 切换股票悬浮按钮（左下角） -->
+  <button id="symbolToggleBtn" style="position:fixed; bottom:20px; left:20px; z-index:200; background:linear-gradient(135deg,#2962ff,#1e88e5); color:#fff; border:none; padding:10px 18px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; box-shadow:0 4px 16px rgba(41,98,255,0.4);">📋 切换股票</button>
+  
+  <!-- 盘前分析浮动面板（右下角） -->
+  <button id="analysisToggleBtn" style="position:fixed; bottom:20px; right:20px; z-index:200; background:linear-gradient(135deg,#6366f1,#8b5cf6); color:#fff; border:none; padding:10px 18px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; box-shadow:0 4px 16px rgba(99,102,241,0.4);">📊 盘前分析</button>
+  
+  <!-- 盘后复盘浮动面板（右下角偏上） -->
+  <button id="reviewToggleBtn" style="position:fixed; bottom:70px; right:20px; z-index:200; background:linear-gradient(135deg,#10b981,#059669); color:#fff; border:none; padding:10px 18px; border-radius:10px; cursor:pointer; font-size:14px; font-weight:600; box-shadow:0 4px 16px rgba(16,185,129,0.4);">🔄 盘后复盘</button>
+  
+  <!-- 切换股票悬浮面板（左下角） -->
+  <div id="symbolPanel" class="symbol-panel" hidden>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <div style="font-weight:700; font-size:16px; color:#fff;">监控股票列表</div>
+        <div id="symbolPanelCount" style="font-size:12px; color:var(--muted, #9aa5ce);">加载中...</div>
+      </div>
+      <button id="symbolCloseBtn" style="background:none; border:1px solid var(--border, #1f2937); color:var(--text, #d1d4dc); padding:4px 12px; border-radius:6px; cursor:pointer;">✕</button>
+    </div>
+    <!-- 股票列表 -->
+    <div id="symbolListContainer" style="max-height:300px; overflow-y:auto;">
+      <div style="color:var(--muted, #9aa5ce); text-align:center; padding:20px;">加载中...</div>
+    </div>
+  </div>
+  
+  <!-- 盘前分析悬浮面板（右下角） -->
+  <div id="analysisPanel" class="analysis-panel" hidden>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <div style="font-weight:700; font-size:16px; color:#fff;">盘前板块分析</div>
+        <div id="analysisModelLabel" style="font-size:12px; color:var(--muted, #9aa5ce);">加载中...</div>
+      </div>
+      <button id="analysisCloseBtn" style="background:none; border:1px solid var(--border, #1f2937); color:var(--text, #d1d4dc); padding:4px 12px; border-radius:6px; cursor:pointer;">✕</button>
+    </div>
+    <!-- 控件区 -->
+    <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:16px; flex-wrap:wrap;">
+      <button id="analysisRunBtn" style="background:linear-gradient(135deg,#6366f1,#8b5cf6); border:none; color:#fff; padding:8px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap;">▶ 运行盘前分析</button>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:11px; color:var(--muted, #9aa5ce);">日期</span>
+        <input id="analysisDateInput" type="date" style="background:var(--panel, #16213e); border:1px solid var(--border, #1f2937); color:#e2e8f0; padding:6px 10px; border-radius:6px; font-size:12px;" />
+      </div>
+      <select id="analysisHistorySelect" style="background:var(--panel, #16213e); border:1px solid var(--border, #1f2937); color:#e2e8f0; padding:6px 10px; border-radius:6px; font-size:12px; min-width:140px;">
+        <option value="">历史报告...</option>
+      </select>
+    </div>
+    <!-- 进度区 -->
+    <div id="analysisProgressCard" style="background:var(--panel, #16213e); border-radius:10px; padding:12px; margin-bottom:16px; display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;">
+        <span id="analysisStatusText" style="color:#e2e8f0;">准备中...</span>
+        <span id="analysisMetaText" style="color:var(--muted, #9aa5ce);"></span>
+      </div>
+      <div style="height:6px; background:var(--border, #1f2937); border-radius:3px; overflow:hidden;">
+        <div id="analysisProgressBar" style="height:100%; width:0%; background:linear-gradient(90deg,#6366f1,#8b5cf6); border-radius:3px; transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <!-- 结果区 -->
+    <div id="analysisResult" style="background:var(--panel, #16213e); border-radius:10px; padding:16px; max-height:400px; overflow-y:auto; font-size:13px; color:var(--text, #d1d4dc); line-height:1.7;">
+      <div style="color:var(--muted, #9aa5ce); text-align:center; padding:20px;">暂无报告，点击「运行盘前分析」开始。</div>
+    </div>
+  </div>
+  
+  <!-- 盘后复盘悬浮面板（右下角偏上） -->
+  <div id="reviewPanel" class="analysis-panel" hidden>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <div>
+        <div style="font-weight:700; font-size:16px; color:#fff;">盘后板块复盘</div>
+        <div id="reviewModelLabel" style="font-size:12px; color:var(--muted, #9aa5ce);">加载中...</div>
+      </div>
+      <button id="reviewCloseBtn" style="background:none; border:1px solid var(--border, #1f2937); color:var(--text, #d1d4dc); padding:4px 12px; border-radius:6px; cursor:pointer;">✕</button>
+    </div>
+    <!-- 控件区 -->
+    <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:16px; flex-wrap:wrap;">
+      <button id="reviewRunBtn" style="background:linear-gradient(135deg,#10b981,#059669); border:none; color:#fff; padding:8px 18px; border-radius:8px; cursor:pointer; font-size:13px; font-weight:600; white-space:nowrap;">▶ 运行盘后复盘</button>
+      <div style="display:flex; flex-direction:column; gap:4px;">
+        <span style="font-size:11px; color:var(--muted, #9aa5ce);">日期</span>
+        <input id="reviewDateInput" type="date" style="background:var(--panel, #16213e); border:1px solid var(--border, #1f2937); color:#e2e8f0; padding:6px 10px; border-radius:6px; font-size:12px;" />
+      </div>
+      <select id="reviewHistorySelect" style="background:var(--panel, #16213e); border:1px solid var(--border, #1f2937); color:#e2e8f0; padding:6px 10px; border-radius:6px; font-size:12px; min-width:140px;">
+        <option value="">历史报告...</option>
+      </select>
+    </div>
+    <!-- 进度区 -->
+    <div id="reviewProgressCard" style="background:var(--panel, #16213e); border-radius:10px; padding:12px; margin-bottom:16px; display:none;">
+      <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:12px;">
+        <span id="reviewStatusText" style="color:#e2e8f0;">准备中...</span>
+        <span id="reviewMetaText" style="color:var(--muted, #9aa5ce);"></span>
+      </div>
+      <div style="height:6px; background:var(--border, #1f2937); border-radius:3px; overflow:hidden;">
+        <div id="reviewProgressBar" style="height:100%; width:0%; background:linear-gradient(90deg,#10b981,#059669); border-radius:3px; transition:width 0.3s;"></div>
+      </div>
+    </div>
+    <!-- 结果区 -->
+    <div id="reviewResult" style="background:var(--panel, #16213e); border-radius:10px; padding:16px; max-height:400px; overflow-y:auto; font-size:13px; color:var(--text, #d1d4dc); line-height:1.7;">
+      <div style="color:var(--muted, #9aa5ce); text-align:center; padding:20px;">暂无报告，点击「运行盘后复盘」开始。</div>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tooltip"></div>
+
+  <div id="alertModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="modalTitle">新增告警规则</span>
+        <button id="modalClose" class="btn-close">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>规则名称</label>
+          <input id="alertName" type="text" placeholder="例如：15min 双斜率向上" />
+        </div>
+        <div class="form-group">
+          <label>周期</label>
+          <select id="alertPeriod">
+            <option value="5min">5 分钟</option>
+            <option value="15min">15 分钟</option>
+            <option value="30min">30 分钟</option>
+            <option value="60min">60 分钟</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>条件逻辑</label>
+          <select id="alertLogic">
+            <option value="AND">AND（全部满足）</option>
+            <option value="OR">OR（任一满足）</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>条件（至少 1 个，当前仅支持顶层扁平编辑）</label>
+          <div id="alertConditions"></div>
+          <button id="addConditionBtn" class="btn-small" type="button">+ 添加条件</button>
+        </div>
+        <div class="form-group">
+          <label>冷却时间（秒）</label>
+          <input id="alertCooldown" type="number" value="300" min="0" step="60" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="alertCancelBtn" class="btn-secondary" type="button">取消</button>
+        <button id="alertSaveBtn" class="btn" type="button">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/state.js?v=202604081000"></script>
+  <script src="/static/js/api.js?v=202604081000"></script>
+  <script src="/static/js/indicators.js?v=202604081000"></script>
+  <script src="/static/js/chart-render.js?v=202604081000"></script>
+  <script src="/static/js/chart-interaction.js?v=202604081000"></script>
+  <script src="/static/js/screener.js?v=202604081000"></script>
+  <script src="/static/js/alerts.js?v=202604081000"></script>
+  <script src="/static/js/watchlist.js?v=202604081000"></script>
+  <script src="/static/js/analysis.js?v=202604081000"></script>
+  <script src="/static/js/review.js?v=202604081000"></script>
+  <script src="/static/js/news_v2.js?v=202604081000"></script>
+  <script src="/static/js/main_fd_20260408.js?v=202604081000"></script>
+
+</body>
+</html>

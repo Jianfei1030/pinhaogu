@@ -1,0 +1,45 @@
+# === 数据库 ===
+*.db
+*.sqlite
+*.sqlite3
+
+# === 日志 ===
+*.log
+logs/
+
+# === 数据文件 ===
+data/
+news_data/
+
+# === Python ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+
+# === PID 文件 ===
+*.pid
+
+# === 报告输出 ===
+reports/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === 临时文件 ===
+*.tmp
+*.temp
+.claude/
+stock-monitor.code-workspace
+*.bak
+thesis-ingest/input_images/
+thesis-ingest/output/
+thesis-ingest/checkpoints/
+checkpoints/
+.pytest_cache/
+data/.review_status.json
+data/bj_retry_final_report.md
+thesis-ingest/database/
