@@ -489,7 +489,6 @@ def parse_llm_output(raw: str) -> dict:
     
     return parsed
 # === QQ 推送配置 ===
-OPENCLAW_MESSAGE_API = "http://127.0.0.1:18789/message"
 
 
 

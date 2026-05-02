@@ -31,7 +31,7 @@ LLM_BASE_URL = os.environ.get(
     "https://coding.dashscope.aliyuncs.com/v1"
 )
 LLM_MODEL = os.environ.get("STOCK_MONITOR_LLM_MODEL", "qwen3.6-plus")
-LLM_PROXY = os.environ.get("STOCK_MONITOR_LLM_PROXY", "http://127.0.0.1:7890")
+LLM_PROXY = os.environ.get("STOCK_MONITOR_LLM_PROXY", "")
 LLM_TIMEOUT = int(os.environ.get("STOCK_MONITOR_LLM_TIMEOUT", "120"))
 API_KEY_ENV = os.environ.get("STOCK_MONITOR_LLM_API_KEY_ENV", "BAILIAN_API_KEY")
 

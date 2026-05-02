@@ -384,7 +384,6 @@ def check_duplicate_processes() -> str:
     return "\n".join(alerts) if alerts else "✅ 无重复进程"
 
 # === QQ 推送配置 ===
-OPENCLAW_MESSAGE_API = "http://127.0.0.1:18789/message"
 
 
 def run(dry_run: bool | None = None, notify: bool | None = None) -> dict:

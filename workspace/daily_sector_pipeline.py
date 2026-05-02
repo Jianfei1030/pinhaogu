@@ -187,7 +187,6 @@ def split_telegram(text, max_len=4000):
     return chunks
 
 # === QQ 推送配置 ===
-OPENCLAW_MESSAGE_API = "http://127.0.0.1:18789/message"
 
 
 

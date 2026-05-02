@@ -120,10 +120,10 @@ web:
   port: 18805
 
 llm:
-  model: qwen3.6-plus
-  base_url: https://coding.dashscope.aliyuncs.com/v1
+  model: qwen-plus  # Default model, override via STOCK_MONITOR_LLM_MODEL env var
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
   api_key_env: BAILIAN_API_KEY
-  proxy: http://127.0.0.1:7890
+  proxy: null  # Set to your proxy if needed, e.g. http://127.0.0.1:7890
   timeout: 300
 
 # Phase 30: 增量补全配置

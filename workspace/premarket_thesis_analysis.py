@@ -817,7 +817,6 @@ def llm_select_sub_themes(tree: dict, news: list, root_theme: str, date: str, ma
 
 
 # === QQ 推送配置 ===
-OPENCLAW_MESSAGE_API = "http://127.0.0.1:18789/message"
 
 
 # === Telegram 发送 ===
